@@ -1,6 +1,7 @@
 import { DebugLogger, describeEnvironment } from './debug.js';
 import { builtinPresets, applyPresetToSelectedClips } from './motionEngineBridge.js';
 import { syncSelectedTimelineItems } from './audioSyncBridge.js';
+import { interpretPremiereProbe, probePremiereUxPApi } from './premiereApiProbe.js';
 
 const root = document;
 const debug = new DebugLogger(root.getElementById('debugLog'));
@@ -213,6 +214,14 @@ async function tryAction(actionName, fn) {
   }
 }
 
+async function refreshSelectionProbe() {
+  const report = await probePremiereUxPApi();
+  const status = interpretPremiereProbe(report);
+  setSelectionStatus(status.title, status.meta, status.status);
+  debug.info('selection.refresh.probe', report);
+  return report;
+}
+
 function wireEvents() {
   $all('.tab').forEach((button) => {
     button.addEventListener('click', () => setTab(button.dataset.tab));
@@ -232,10 +241,7 @@ function wireEvents() {
     debug.info('keyframes.curve.preset.selected', { preset: button.dataset.curve, bezier: curveToBezier() });
   });
 
-  $('#refreshSelection').addEventListener('click', () => {
-    debug.apiMissing('selection.refresh', 'Premiere active timeline selection API');
-    setSelectionStatus('Selecao ainda nao conectada', 'A API de selecao precisa ser validada no Premiere.', 'Debug');
-  });
+  $('#refreshSelection').addEventListener('click', () => tryAction('selection.refresh', refreshSelectionProbe));
 
   $('#applyMotion').addEventListener('click', () => tryAction('motion.apply', async () => {
     return applyPresetToSelectedClips(state.motionPreset);
@@ -279,7 +285,7 @@ function init() {
   setCurveFromBezier(curvePresets['expo-out']);
   setMotionPreset('spring');
   debug.info('app.loaded', {
-    version: '0.1.0',
+    version: '0.1.1',
     environment: describeEnvironment(),
     curvePresetCount: curvePresetList.length,
   });
