@@ -16,16 +16,38 @@ const state = {
   },
 };
 
-const curvePresets = {
-  ease: [0.25, 0.10, 0.25, 1.00],
-  'ease-in': [0.42, 0.00, 1.00, 1.00],
-  'ease-out': [0.00, 0.00, 0.58, 1.00],
-  quad: [0.45, 0.03, 0.52, 0.96],
-  expo: [0.19, 1.00, 0.22, 1.00],
-  back: [0.68, -0.55, 0.27, 1.55],
-  circ: [0.79, 0.14, 0.15, 0.86],
-  linear: [0.00, 0.00, 1.00, 1.00],
-};
+const curvePresetList = [
+  { id: 'linear', label: 'linear', bezier: [0.00, 0.00, 1.00, 1.00] },
+  { id: 'ease', label: 'ease', bezier: [0.25, 0.10, 0.25, 1.00] },
+  { id: 'sine-in', label: 'sine in', bezier: [0.47, 0.00, 0.75, 0.72] },
+  { id: 'sine-out', label: 'sine out', bezier: [0.39, 0.58, 0.57, 1.00] },
+  { id: 'sine-in-out', label: 'sine i/o', bezier: [0.45, 0.05, 0.55, 0.95] },
+  { id: 'quad-in', label: 'quad in', bezier: [0.55, 0.09, 0.68, 0.53] },
+  { id: 'quad-out', label: 'quad out', bezier: [0.25, 0.46, 0.45, 0.94] },
+  { id: 'quad-in-out', label: 'quad i/o', bezier: [0.46, 0.03, 0.52, 0.96] },
+  { id: 'cubic-in', label: 'cubic in', bezier: [0.55, 0.06, 0.68, 0.19] },
+  { id: 'cubic-out', label: 'cubic out', bezier: [0.22, 0.61, 0.36, 1.00] },
+  { id: 'cubic-in-out', label: 'cubic i/o', bezier: [0.65, 0.05, 0.36, 1.00] },
+  { id: 'quart-in', label: 'quart in', bezier: [0.90, 0.03, 0.69, 0.22] },
+  { id: 'quart-out', label: 'quart out', bezier: [0.17, 0.84, 0.44, 1.00] },
+  { id: 'quart-in-out', label: 'quart i/o', bezier: [0.77, 0.00, 0.18, 1.00] },
+  { id: 'quint-in', label: 'quint in', bezier: [0.76, 0.05, 0.86, 0.06] },
+  { id: 'quint-out', label: 'quint out', bezier: [0.23, 1.00, 0.32, 1.00] },
+  { id: 'quint-in-out', label: 'quint i/o', bezier: [0.86, 0.00, 0.07, 1.00] },
+  { id: 'expo-in', label: 'expo in', bezier: [0.95, 0.05, 0.80, 0.04] },
+  { id: 'expo-out', label: 'expo out', bezier: [0.19, 1.00, 0.22, 1.00] },
+  { id: 'expo-in-out', label: 'expo i/o', bezier: [1.00, 0.00, 0.00, 1.00] },
+  { id: 'circ-in', label: 'circ in', bezier: [0.60, 0.04, 0.98, 0.34] },
+  { id: 'circ-out', label: 'circ out', bezier: [0.08, 0.82, 0.17, 1.00] },
+  { id: 'circ-in-out', label: 'circ i/o', bezier: [0.79, 0.14, 0.15, 0.86] },
+  { id: 'back-in', label: 'back in', bezier: [0.60, -0.28, 0.74, 0.05] },
+  { id: 'back-out', label: 'back out', bezier: [0.18, 0.89, 0.32, 1.28] },
+  { id: 'back-in-out', label: 'back i/o', bezier: [0.68, -0.55, 0.27, 1.55] },
+  { id: 'snap', label: 'snap', bezier: [0.17, 0.95, 0.28, 1.00] },
+  { id: 'soft', label: 'soft', bezier: [0.33, 0.00, 0.20, 1.00] },
+];
+
+const curvePresets = Object.fromEntries(curvePresetList.map((preset) => [preset.id, preset.bezier]));
 
 function $(selector) {
   return root.querySelector(selector);
@@ -112,6 +134,42 @@ function updateCurve() {
   $('#curveValue').textContent = bezier.join(', ');
 }
 
+function miniCurvePath(values) {
+  const [x1, y1, x2, y2] = values;
+  const start = { x: 5, y: 23 };
+  const end = { x: 35, y: 5 };
+  const width = end.x - start.x;
+  const height = start.y - end.y;
+  const h1 = { x: start.x + x1 * width, y: start.y - y1 * height };
+  const h2 = { x: start.x + x2 * width, y: start.y - y2 * height };
+  return `M${start.x} ${start.y} C${h1.x.toFixed(2)} ${h1.y.toFixed(2)} ${h2.x.toFixed(2)} ${h2.y.toFixed(2)} ${end.x} ${end.y}`;
+}
+
+function renderCurveLibrary() {
+  const library = $('#curveLibrary');
+  library.textContent = '';
+
+  curvePresetList.forEach((preset) => {
+    const button = document.createElement('button');
+    button.className = `curve-preset${preset.id === 'expo-out' ? ' is-active' : ''}`;
+    button.type = 'button';
+    button.dataset.curve = preset.id;
+    button.title = `${preset.label}: ${preset.bezier.map((value) => value.toFixed(2)).join(', ')}`;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 40 28');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', miniCurvePath(preset.bezier));
+    svg.append(path);
+
+    const label = document.createElement('span');
+    label.textContent = preset.label;
+
+    button.append(svg, label);
+    library.append(button);
+  });
+}
+
 function enableHandleDrag(handleId, pointName) {
   const handle = root.getElementById(handleId);
 
@@ -129,7 +187,7 @@ function enableHandleDrag(handleId, pointName) {
     const y = ((event.clientY - rect.top) / rect.height) * 190;
 
     state.curve[pointName].x = clamp(x, 35, 590);
-    state.curve[pointName].y = clamp(y, 20, 165);
+    state.curve[pointName].y = clamp(y, -60, 245);
     updateCurve();
   });
 
@@ -164,13 +222,14 @@ function wireEvents() {
     button.addEventListener('click', () => setMotionPreset(button.dataset.motionPreset));
   });
 
-  $all('[data-curve]').forEach((button) => {
-    button.addEventListener('click', () => {
-      $all('[data-curve]').forEach((item) => item.classList.remove('is-active'));
-      button.classList.add('is-active');
-      setCurveFromBezier(curvePresets[button.dataset.curve]);
-      debug.info('keyframes.curve.preset.selected', { preset: button.dataset.curve, bezier: curveToBezier() });
-    });
+  $('#curveLibrary').addEventListener('click', (event) => {
+    const button = event.target.closest('[data-curve]');
+    if (!button) return;
+
+    $all('[data-curve]').forEach((item) => item.classList.remove('is-active'));
+    button.classList.add('is-active');
+    setCurveFromBezier(curvePresets[button.dataset.curve]);
+    debug.info('keyframes.curve.preset.selected', { preset: button.dataset.curve, bezier: curveToBezier() });
   });
 
   $('#refreshSelection').addEventListener('click', () => {
@@ -213,14 +272,16 @@ function wireEvents() {
 }
 
 function init() {
+  renderCurveLibrary();
   wireEvents();
   enableHandleDrag('handleOne', 'h1');
   enableHandleDrag('handleTwo', 'h2');
-  updateCurve();
+  setCurveFromBezier(curvePresets['expo-out']);
   setMotionPreset('spring');
   debug.info('app.loaded', {
     version: '0.1.0',
     environment: describeEnvironment(),
+    curvePresetCount: curvePresetList.length,
   });
 }
 
