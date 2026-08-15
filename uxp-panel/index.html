@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Premiere Motion Panel</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span>Premiere Motion</span>
+      </div>
+      <button id="refreshSelection" class="icon-button" type="button" title="Atualizar selecao da timeline">Refresh</button>
+    </header>
+
+    <section class="selection-card" aria-live="polite">
+      <div>
+        <div id="selectionTitle" class="selection-title">Nenhum clip lido ainda</div>
+        <div id="selectionMeta" class="muted">Clique em Refresh para tentar ler a selecao.</div>
+      </div>
+      <span id="selectionState" class="chip">Idle</span>
+    </section>
+
+    <nav class="tabs" aria-label="Modos do painel">
+      <button class="tab is-active" type="button" data-tab="motion">Motion</button>
+      <button class="tab" type="button" data-tab="keyframes">Keyframes</button>
+      <button class="tab" type="button" data-tab="sync">Audio Sync</button>
+    </nav>
+
+    <section class="tab-view is-visible" data-view="motion">
+      <div class="field-grid">
+        <label>Trigger
+          <select id="motionTrigger">
+            <option value="both">In + Out</option>
+            <option value="in">In</option>
+            <option value="out">Out</option>
+          </select>
+        </label>
+        <label>Target
+          <select id="motionTarget">
+            <option value="transform">Transform</option>
+            <option value="position">Position</option>
+            <option value="scale">Scale</option>
+            <option value="rotation">Rotation</option>
+            <option value="opacity">Opacity</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="preset-grid" aria-label="Motion presets">
+        <button class="preset-card is-active" type="button" data-motion-preset="spring" title="Spring suave baseado no in/out do clip.">
+          <svg viewBox="0 0 100 24"><path d="M4 18 C22 18 22 4 36 5 C52 6 46 21 62 15 C78 9 76 10 96 10"/></svg>
+          <span>Spring</span>
+        </button>
+        <button class="preset-card" type="button" data-motion-preset="overshoot" title="Passa do alvo e retorna, sem keyframes visiveis.">
+          <svg viewBox="0 0 100 24"><path d="M4 19 C28 19 36 2 54 6 C70 10 66 14 96 10"/></svg>
+          <span>Overshoot</span>
+        </button>
+        <button class="preset-card" type="button" data-motion-preset="bounce" title="Movimento com quique amortecido.">
+          <svg viewBox="0 0 100 24"><path d="M4 18 C20 18 22 7 35 7 C48 7 47 18 60 16 C73 14 76 10 96 10"/></svg>
+          <span>Bounce</span>
+        </button>
+        <button class="preset-card" type="button" data-motion-preset="slide" title="Entrada ou saida lateral com easing limpo.">
+          <svg viewBox="0 0 100 24"><path d="M4 18 C25 18 28 13 43 10 C58 7 67 7 96 7"/></svg>
+          <span>Slide</span>
+        </button>
+      </div>
+
+      <label>Intensity
+        <input id="motionIntensity" type="range" min="0" max="100" value="68">
+      </label>
+      <label>Damping
+        <input id="motionDamping" type="range" min="0" max="100" value="55">
+      </label>
+
+      <div class="action-row">
+        <button id="applyMotion" class="primary-button" type="button" title="Aplica o preset ao clip selecionado, quando o motor estiver disponivel.">Apply</button>
+        <button id="removeMotion" class="secondary-button" type="button" title="Remove o preset procedural aplicado pelo painel.">Remove</button>
+      </div>
+    </section>
+
+    <section class="tab-view" data-view="keyframes">
+      <div id="curveEditor" class="curve-editor" aria-label="Editor de curva Bezier">
+        <svg viewBox="0 0 620 190">
+          <path class="gridline" d="M30 30H590M30 80H590M30 130H590M90 20V165M210 20V165M330 20V165M450 20V165M570 20V165"/>
+          <path id="curvePath" class="curve-path" d="M35 145 C145 145 400 82 590 82"/>
+          <path id="handleLineOne" class="handle-line" d="M35 145 L145 145"/>
+          <path id="handleLineTwo" class="handle-line" d="M590 82 L400 82"/>
+          <circle class="end-dot" cx="35" cy="145" r="5"/>
+          <circle class="end-dot" cx="590" cy="82" r="5"/>
+          <circle id="handleOne" class="handle-dot" cx="145" cy="145" r="7"/>
+          <circle id="handleTwo" class="handle-dot" cx="400" cy="82" r="7"/>
+        </svg>
+      </div>
+      <div id="curveValue" class="curve-value">0.20, 0.14, 0.66, 0.57</div>
+
+      <div class="curve-tool-row">
+        <button id="readKeys" class="icon-button" type="button" title="Tenta ler keyframes da propriedade selecionada.">Read</button>
+        <button id="reverseCurve" class="icon-button" type="button" title="Inverte a curva atual.">Reverse</button>
+        <button id="favoriteCurve" class="icon-button" type="button" title="Marca a curva como favorita futuramente.">Star</button>
+      </div>
+
+      <button id="applyCurve" class="primary-button full" type="button" title="Aplica a curva Bezier nos keyframes selecionados ou no par mais proximo.">Apply</button>
+
+      <div class="library-tabs">
+        <button class="is-active" type="button">Curves</button>
+        <button type="button">Favorites</button>
+      </div>
+
+      <div class="curve-library" aria-label="Presets de curva">
+        <button class="curve-preset" type="button" data-curve="ease"><svg viewBox="0 0 40 28"><path d="M5 23 C12 22 12 6 20 5 C28 4 28 22 35 22"/></svg><span>ease</span></button>
+        <button class="curve-preset" type="button" data-curve="ease-in"><svg viewBox="0 0 40 28"><path d="M5 23 C10 23 18 18 22 12 C26 6 30 5 35 5"/></svg><span>ease in</span></button>
+        <button class="curve-preset" type="button" data-curve="ease-out"><svg viewBox="0 0 40 28"><path d="M5 23 C11 23 12 6 20 6 C28 6 29 6 35 5"/></svg><span>ease out</span></button>
+        <button class="curve-preset" type="button" data-curve="quad"><svg viewBox="0 0 40 28"><path d="M5 23 C14 23 14 23 20 14 C26 5 26 5 35 5"/></svg><span>quad</span></button>
+        <button class="curve-preset is-active" type="button" data-curve="expo"><svg viewBox="0 0 40 28"><path d="M5 23 C10 23 15 4 22 5 C29 6 28 6 35 5"/></svg><span>expo</span></button>
+        <button class="curve-preset" type="button" data-curve="back"><svg viewBox="0 0 40 28"><path d="M5 23 C16 24 13 8 21 7 C28 6 27 5 35 5"/></svg><span>back</span></button>
+        <button class="curve-preset" type="button" data-curve="circ"><svg viewBox="0 0 40 28"><path d="M5 23 C12 21 15 10 20 12 C25 14 26 5 35 5"/></svg><span>circ</span></button>
+        <button class="curve-preset" type="button" data-curve="linear"><svg viewBox="0 0 40 28"><path d="M5 23 L35 5"/></svg><span>linear</span></button>
+      </div>
+    </section>
+
+    <section class="tab-view" data-view="sync">
+      <div class="sync-box">
+        <div>
+          <div class="sync-title">Sync Selected Clips <span class="info" title="Selecione videos e audios na timeline. O painel tentara sincronizar a selecao preservando a ordem relativa dos videos.">?</span></div>
+          <div class="muted">Sincroniza videos e audios selecionados na timeline.</div>
+        </div>
+        <button id="syncSelected" class="primary-button" type="button" title="Executa a sincronizacao por waveform nos itens selecionados.">Sync</button>
+      </div>
+    </section>
+
+    <section class="debug-panel">
+      <details>
+        <summary>Debug</summary>
+        <div class="debug-actions">
+          <button id="copyDebug" class="secondary-button" type="button">Copy</button>
+          <button id="clearDebug" class="secondary-button" type="button">Clear</button>
+        </div>
+        <pre id="debugLog" class="debug-log"></pre>
+      </details>
+    </section>
+  </main>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
