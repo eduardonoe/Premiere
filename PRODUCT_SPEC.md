@@ -9,6 +9,27 @@ Criar um painel para Adobe Premiere Pro com dois cenarios separados de animacao:
 
 O painel nao deve exigir que o usuario arraste ou carregue o clip para dentro da interface. O fluxo principal deve ser contextual: o usuario seleciona um ou mais clips na timeline e usa o painel para ler o estado do clip, manipular keyframes existentes ou aplicar animacoes/presets.
 
+## Requisito de performance
+
+O modo procedural sem keyframes precisa ser leve no playback e deve usar processamento acelerado por GPU sempre que o mecanismo escolhido permitir.
+
+Este requisito nao deve ser tratado como otimizacao futura. Ele define a arquitetura do produto.
+
+Implicacoes:
+
+- UXP pode ser a interface de controle, mas provavelmente nao deve ser o motor de render da animacao procedural;
+- a animacao sem keyframes deve preferir efeito, transicao ou plugin renderizavel pela pipeline acelerada do Premiere;
+- presets como spring, overshoot e bounce devem ser calculados de forma procedural pelo efeito/plugin durante o playback;
+- evitar solucoes que dependam de recalculo pesado via script, geracao de muitos elementos auxiliares ou atualizacao frame a frame por painel;
+- validar desempenho em timeline real antes de ampliar a biblioteca de presets.
+
+Meta minima de performance:
+
+- playback responsivo em 1080p e 4K com ao menos um clip animado;
+- sem travamentos perceptiveis ao mover o playhead;
+- parametros atualizaveis pelo painel sem recriar o efeito inteiro quando possivel;
+- render/export consistente com o preview.
+
 ## Cenario 1: Keyframe / Bezier
 
 Este modo trabalha com keyframes reais.
@@ -49,8 +70,9 @@ Fluxo esperado:
 2. O painel detecta o clip selecionado.
 3. O painel le in/out e duracao do clip.
 4. O usuario escolhe se o preset reage ao inicio, ao fim ou a ambos.
-5. O painel aplica uma animacao procedural a propriedades como Position, Scale, Rotation e Opacity.
-6. A animacao reage ao tempo do clip sem criar keyframes.
+5. O painel aplica uma animacao procedural acelerada por GPU quando possivel.
+6. A animacao afeta propriedades como Position, Scale, Rotation e Opacity.
+7. A animacao reage ao tempo do clip sem criar keyframes.
 
 Presets iniciais:
 
@@ -81,13 +103,22 @@ Este e o ponto que precisa ser validado antes da implementacao principal.
 
 Caminhos possiveis:
 
-- aplicar um efeito/plugin que renderiza a animacao em tempo real;
+- aplicar um efeito/plugin que renderiza a animacao em tempo real pela pipeline do Premiere;
 - usar uma transicao/effect style semelhante a Motion Tween;
-- usar MOGRT/Essential Graphics com controles internos;
+- usar MOGRT/Essential Graphics com controles internos, se o desempenho for aceitavel;
 - usar preset de efeito com comportamento procedural;
 - usar UXP apenas como painel de controle para aplicar/configurar outro mecanismo.
 
-O painel UXP sozinho pode nao ser suficiente para animacao procedural real se ele apenas manipular propriedades e keyframes. A validacao tecnica deve descobrir qual mecanismo permite animar sem keyframes no Premiere atual.
+O painel UXP sozinho pode nao ser suficiente para animacao procedural real se ele apenas manipular propriedades e keyframes. A validacao tecnica deve descobrir qual mecanismo permite animar sem keyframes no Premiere atual e com aceleracao por GPU.
+
+## Arquitetura provavel
+
+Separar interface e motor:
+
+- Painel UXP: selecao de clip, UI, presets, leitura de estado, aplicacao e atualizacao de parametros.
+- Motor procedural: efeito/transicao/plugin responsavel por renderizar a animacao no playback.
+
+O motor procedural deve ser avaliado antes da interface final. Se nao houver caminho viavel para GPU, o modo sem keyframes perde prioridade de produto.
 
 ## Linguagem de produto
 
@@ -142,13 +173,15 @@ Antes de construir a interface final, validar separadamente:
 3. Aplicar uma curva/easing.
 4. Confirmar que os keyframes foram alterados.
 
-### Prototipo B: Sem Keyframes
+### Prototipo B: Sem Keyframes / GPU
 
 1. Selecionar um clip sem keyframes.
 2. Aplicar um preset de spring ou overshoot baseado no in do clip.
 3. Confirmar que a animacao acontece sem keyframes visiveis no clip.
-4. Repetir com out do clip.
-5. Confirmar que o preset pode ser atualizado ou removido.
+4. Confirmar que a animacao e processada por mecanismo leve no playback, idealmente acelerado por GPU.
+5. Repetir com out do clip.
+6. Confirmar que o preset pode ser atualizado ou removido.
+7. Testar scrub/playback em timeline real.
 
 Se o Prototipo B exigir um efeito/plugin separado alem do painel UXP, documentar essa dependencia antes de avancar.
 
@@ -156,5 +189,7 @@ Se o Prototipo B exigir um efeito/plugin separado alem do painel UXP, documentar
 
 - Controle fino de Bezier pode depender de APIs ainda limitadas.
 - Animacao procedural sem keyframes pode exigir efeito/plugin nativo, transicao, MOGRT ou outro mecanismo alem de UXP puro.
+- UXP provavelmente nao e o lugar certo para renderizar a animacao; deve atuar como interface de controle.
 - Presets procedurais precisam ser removiveis/atualizaveis sem destruir ajustes do usuario.
 - Propriedades nativas e efeitos aplicados podem ter comportamentos diferentes.
+- Sem GPU ou pipeline eficiente, a experiencia pode ficar pesada demais para uso profissional.
