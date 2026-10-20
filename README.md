@@ -1,64 +1,34 @@
 # Premiere
 
-Repositorio de scripts, paineis e extensoes para Adobe Premiere Pro.
+Repositorio de scripts, painéis e extensões para Adobe Premiere Pro.
 
 ## Projetos atuais
 
-- **Premiere Toolkit (v1.0.0)**: Painel UXP para Adobe Premiere Pro. Limpeza e organização de projeto, consolidação de duplicados e remoção de tracks vazias.
+- **Premiere Toolkit (v1.0.0)**: Painel UXP oficial para Adobe Premiere Pro. Limpeza e organização de projeto, consolidação de duplicados e remoção de tracks vazias na timeline.
 
-## Objetivo
-
-Concentrar desenvolvimentos relacionados ao Premiere Pro, como scripts, paineis CEP/UXP quando aplicavel, automacoes de timeline, organizacao de projeto, interpretacao de footage e fluxos de exportacao.
-
-## Estrutura recomendada
+## Estrutura do Repositório
 
 ```text
-Nome do Projeto/
+Premiere Toolkit/
   README.md
-  src/
-  panel/
-  scripts/
-  assets/
-  dist/
+  plugin/
+  install/
+  test/
+  tools/
+  Premiere Toolkit 1.0.0 (Windows).zip
+  Premiere Toolkit 1.0.0 (Mac).zip
 ```
 
-Para extensoes CEP, uma estrutura comum pode ser:
+## Releases
 
-```text
-Nome do Painel CEP/
-  CSXS/
-    manifest.xml
-  index.html
-  main.js
-  jsx/
-  assets/
-  dist/
-```
+As versões estáveis e instaladores prontos para uso em Windows e macOS estão disponíveis na aba [Releases](https://github.com/eduardonoe/Premiere/releases).
 
-## Regra principal
+## Diretrizes de Desenvolvimento
 
-Antes de alterar qualquer script, painel ou arquivo de empacotamento, leia:
+Antes de alterar qualquer script, painel ou arquivo de empacotamento, consulte:
 
 1. `VERSIONING.md`
 2. `AGENTS.md`
 3. `CLAUDE.md`
 
-Esses arquivos definem o padrao compartilhado entre Codex, Claude Code e qualquer outro agente que trabalhe neste repositorio.
-
-## Fluxo recomendado
-
-1. Entender qual script, painel ou fluxo sera alterado.
-2. Conferir a versao atual no arquivo principal, `manifest.xml`, `package.json` ou documentacao do projeto.
-3. Implementar a mudanca no menor escopo possivel.
-4. Atualizar a versao quando a mudanca alterar comportamento, empacotamento ou estabilidade.
-5. Fazer commit com mensagem clara em portugues.
-6. Subir para o GitHub.
-
-## Cuidados especificos de Premiere
-
-- Nao commitar arquivos grandes de midia, renders, caches ou exports finais sem decisao explicita.
-- Evitar depender de caminhos absolutos de maquina local.
-- Tratar `.prproj` com cuidado: arquivos de projeto podem ser grandes e dificeis de versionar.
-- Separar codigo-fonte de pacotes finais em `dist/`.
-- Registrar claramente versao do Premiere usada em testes quando houver diferenca de comportamento.
-- Evitar misturar scripts de After Effects ou Photoshop neste repositorio.
+Sempre siga o versionamento SemVer (`MAJOR.MINOR.PATCH`) e faça commits em português com prefixos semânticos padronizados.
