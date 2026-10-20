@@ -1,0 +1,280 @@
+/* Premiere Toolkit — paleta Premiere Pro + acento roxo.
+   Cores chapadas: nenhum gradient. Nenhum <button> nativo: a UXP nao
+   faz layout dos filhos de <button>, entao tudo interativo e <div>. */
+:root {
+  --bg:        #1b1b1b;
+  --card:      #232323;
+  --sunk:      #191919;
+  --tile:      #2b2b2b;
+  --tile-hi:   #333333;
+  --line:      #383838;
+  --line-hi:   #464646;
+  --txt:       #e4e4e4;
+  --txt-dim:   #9a9a9a;
+  --txt-faint: #6d6d6d;
+  --accent:    #8b5cf6;
+  --accent-hi: #a78bfa;
+  --accent-dn: #7443e8;
+  --accent-bg: #2a2340;
+  --danger:    #e26060;
+  --ok:        #52c98d;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg);
+  color: var(--txt);
+  font-family: "Adobe Clean", "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: .015em;
+  -webkit-user-select: none;
+  user-select: none;
+  overflow-y: auto;
+}
+
+#app { padding: 10px; display: flex; flex-direction: column; }
+#app > .card { margin-bottom: 8px; }
+
+/* ---------- card ---------- */
+.card {
+  background-color: var(--card);
+  border-radius: 8px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+}
+.card > * { margin-bottom: 10px; }
+.card > *:last-child { margin-bottom: 0; }
+
+/* ---------- section header ---------- */
+.sec {
+  display: flex;
+  align-items: baseline;
+  height: 12px;
+}
+.sec-t {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--accent-hi);
+}
+.sec-x {
+  flex: 1;
+  margin-left: 10px;
+  font-size: 11px;
+  color: var(--txt-faint);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- selection strip ---------- */
+.sel {
+  display: flex;
+  align-items: center;
+  background-color: var(--sunk);
+  border-radius: 6px;
+  padding: 6px 6px 6px 8px;
+  height: 34px;
+}
+.sel-count {
+  min-width: 18px; height: 18px;
+  border-radius: 9px;
+  background-color: var(--line);
+  color: var(--txt-dim);
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 5px;
+  flex: 0 0 auto;
+  margin-right: 10px;
+}
+.sel.has .sel-count { background-color: var(--accent); color: #fff; }
+.sel-text {
+  flex: 1;
+  min-width: 0;
+  color: var(--txt-faint);
+  font-size: 12px;
+  letter-spacing: .02em;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.sel .ibtn { margin-left: 8px; }
+.sel.has .sel-text { color: var(--txt); }
+
+/* ---------- rows (opcoes e acoes) ---------- */
+.rows { display: flex; flex-direction: column; }
+.rows > .row { margin-bottom: 6px; }
+.rows > .row:last-child { margin-bottom: 0; }
+
+.row {
+  display: flex;
+  align-items: center;
+  padding: 9px 14px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.row:hover { background-color: var(--tile); }
+.row:hover .tile { border-color: var(--line-hi); }
+
+/* Checkbox no formato do Premiere: quadrado com canto levemente arredondado,
+   fundo afundado, borda fina clara — e quando marcado o contorno acende na cor
+   de destaque com o check dentro (na Adobe e azul; aqui, roxo).
+
+   O check e SVG inline, NAO ::after: a UXP nao renderiza pseudo-elementos, e
+   por isso o estado marcado aparecia como um quadrado chapado sem o "v".
+   margin-right em vez de gap: a UXP tambem nao implementa gap no flexbox. */
+.cb {
+  width: 15px; height: 15px;
+  flex: 0 0 15px;
+  margin-right: 14px;
+  border: 1px solid #8f8f8f;
+  border-radius: 3px;
+  background-color: var(--sunk);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cb svg {
+  width: 11px; height: 11px;
+  fill: none;
+  stroke: transparent;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.row:hover .cb { border-color: #c4c4c4; }
+
+.opt.on .cb {
+  border-color: var(--accent);
+  border-width: 1.5px;
+  background-color: var(--sunk);
+}
+.opt.on .cb svg { stroke: var(--accent-hi); }
+
+.tile {
+  width: 30px; height: 30px;
+  flex: 0 0 30px;
+  margin-right: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background-color: var(--sunk);
+  display: flex; align-items: center; justify-content: center;
+}
+.tile svg {
+  width: 17px; height: 17px;
+  fill: none;
+  stroke: var(--txt-dim);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.txt {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.lbl { color: var(--txt); letter-spacing: .02em; }
+.hint {
+  margin-top: 3px;
+  font-size: 11px;
+  letter-spacing: .025em;
+  line-height: 1.25;
+  color: var(--txt-faint);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* estado ligado: so borda + checkbox + tile. Sem faixa de fundo. */
+.opt.on { border-color: var(--accent); }
+.opt.on .tile {
+  border-color: var(--accent);
+  background-color: var(--accent);
+}
+.opt.on .tile svg { stroke: #fff; }
+
+/* marcada mas sem selecao no bin: nao tem efeito, avisa em vez de travar */
+.opt.warn { border-color: #7a6a3a; }
+.opt.warn .hint { color: #c9a94e; }
+
+.row.off { opacity: .32; cursor: default; }
+.row.off:hover { background-color: transparent; }
+.row.off:hover .tile { border-color: var(--line); }
+
+/* ---------- botoes ---------- */
+.btn {
+  border-radius: 7px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  font-weight: 600;
+  letter-spacing: .03em;
+}
+.btn svg {
+  width: 15px; height: 15px;
+  margin-right: 8px;
+  fill: none; stroke: #fff;
+  stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round;
+}
+
+.primary { background-color: var(--accent); color: #fff; }
+.primary:hover { background-color: var(--accent-hi); }
+.primary.off {
+  background-color: #2e2e2e;
+  color: var(--txt-faint);
+  cursor: default;
+}
+.primary.off svg { stroke: var(--txt-faint); }
+
+.flat { background-color: var(--tile); color: var(--txt); font-weight: 400; }
+.flat:hover { background-color: var(--tile-hi); }
+
+/* botao de icone: quadrado arredondado com borda, nunca uma bola solta */
+.ibtn {
+  width: 26px; height: 26px;
+  flex: 0 0 26px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background-color: var(--tile);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.ibtn:hover { background-color: var(--tile-hi); border-color: var(--accent); }
+.ibtn svg {
+  width: 13px; height: 13px;
+  fill: none; stroke: var(--txt-dim);
+  stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round;
+}
+.ibtn:hover svg { stroke: var(--accent-hi); }
+
+/* tudo que estiver desabilitado durante uma operacao */
+.busy .row, .busy .btn, .busy .ibtn { opacity: .4; cursor: default; }
+
+/* ---------- status ---------- */
+.status {
+  min-height: 14px;
+  padding: 1px 4px;
+  font-size: 12px;
+  letter-spacing: .02em;
+  color: var(--txt-dim);
+  -webkit-user-select: text;
+  user-select: text;
+}
+.status.busy { color: var(--accent-hi); }
+.status.ok   { color: var(--ok); }
+.status.err  { color: var(--danger); }
+
+/* ---------- footer ---------- */
+.foot {
+  display: flex;
+  align-items: center;
+  padding: 2px 4px 4px;
+}
+.ver { flex: 1; font-size: 11px; color: var(--txt-faint); }
+.ver b { color: var(--txt-dim); font-weight: 600; }

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ============ PROJECT ============ -->
+    <div class="card">
+      <div class="sec">
+        <span class="sec-t">Project</span>
+      </div>
+
+      <div class="sel" id="selLine">
+        <span class="sel-count" id="selCount">0</span>
+        <span class="sel-text" id="selText">no timeline selected</span>
+        <div class="ibtn" id="btnRefreshSel" title="Reload selection from the Project panel">
+          <svg viewBox="0 0 16 16"><path d="M13.4 8a5.4 5.4 0 1 1-1.6-3.8M13.4 1.8v3.5H9.9"/></svg>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row opt" data-opt="keepSelected">
+          <span class="cb"><svg viewBox="0 0 14 14"><path d="M3 7.3l2.6 2.7L11 4.2"/></svg></span>
+          <span class="tile">
+            <svg viewBox="0 0 20 20">
+              <path d="M2.8 4.8h14.4v10.4H2.8zM6.4 4.8v10.4M13.6 4.8v10.4"/>
+            </svg>
+          </span>
+          <span class="txt">
+            <span class="lbl">Keep only selected timelines</span>
+            <span class="hint">deletes the rest, keeps their nests</span>
+          </span>
+        </div>
+
+        <div class="row opt" data-opt="cleanUnused">
+          <span class="cb"><svg viewBox="0 0 14 14"><path d="M3 7.3l2.6 2.7L11 4.2"/></svg></span>
+          <span class="tile">
+            <svg viewBox="0 0 20 20">
+              <path d="M3.6 5.6h12.8M7.8 5.6V3.6h4.4v2M5.2 5.6l.8 9.9a1 1 0 0 0 1 .9h6a1 1 0 0 0 1-.9l.8-9.9"/>
+            </svg>
+          </span>
+          <span class="txt">
+            <span class="lbl">Consolidate duplicates &amp; remove unused</span>
+            <span class="hint">keeps only what the timelines reference</span>
+          </span>
+        </div>
+
+        <div class="row opt" data-opt="organize">
+          <span class="cb"><svg viewBox="0 0 14 14"><path d="M3 7.3l2.6 2.7L11 4.2"/></svg></span>
+          <span class="tile">
+            <svg viewBox="0 0 20 20">
+              <path d="M2.8 4.4h4.6l1.3 1.8h8.5v9.4H2.8z"/>
+              <path d="M6.4 10.2h7.2M6.4 12.6h4.4"/>
+            </svg>
+          </span>
+          <span class="txt">
+            <span class="lbl">Organize into model bins</span>
+            <span class="hint">Audios · CG · Color · Imagens · Timelines</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="btn primary" id="btnRun">
+        <svg viewBox="0 0 20 20">
+          <path d="M5.6 2.8l.8 2.1 2.1.8-2.1.8-.8 2.1-.8-2.1-2.1-.8 2.1-.8z"/>
+          <path d="M13.2 8.6l1.1 2.8 2.8 1.1-2.8 1.1-1.1 2.8-1.1-2.8-2.8-1.1 2.8-1.1z"/>
+        </svg>
+        <span id="runLabel">Clean &amp; Organize</span>
+      </div>
+    </div>
+
+    <!-- ============ SEQUENCE ============ -->
+    <div class="card">
+      <div class="sec">
+        <span class="sec-t">Sequence</span>
+        <span class="sec-x" id="activeSeq">—</span>
+      </div>
+
+      <div class="row act" id="btnEmptyTracks">
+        <span class="tile">
+          <svg viewBox="0 0 20 20">
+            <path d="M2.8 5.2h14.4M2.8 10h14.4M2.8 14.8h6.6"/>
+            <path d="M12.4 14.8h4.8"/>
+          </svg>
+        </span>
+        <span class="txt">
+          <span class="lbl">Delete Empty Tracks</span>
+          <span class="hint" id="tracksHint">not calibrated</span>
+        </span>
+        <div class="ibtn" id="btnCalTracks" title="Calibrate: record your clicks in the Delete Tracks dialog">
+          <svg viewBox="0 0 16 16">
+            <path d="M8 13.6A5.6 5.6 0 1 0 8 2.4a5.6 5.6 0 0 0 0 11.2z"/>
+            <path d="M8 .8v2.6M8 12.6v2.6M15.2 8h-2.6M3.4 8H.8"/>
+            <path d="M8 9.1a1.1 1.1 0 1 0 0-2.2 1.1 1.1 0 0 0 0 2.2z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="row act" id="btnUnnest">
+        <span class="tile">
+          <svg viewBox="0 0 20 20">
+            <path d="M2.6 4.2h6.2v4.4H2.6z"/>
+            <path d="M11.2 11.4h6.2v4.4h-6.2zM2.6 11.4h6.2v4.4H2.6z"/>
+            <path d="M9.9 8.6v1.4M6 8.6v2.8M13.8 8.6v2.8"/>
+          </svg>
+        </span>
+        <span class="txt">
+          <span class="lbl">Un-nest</span>
+          <span class="hint">via clipboard · keeps effects and speed</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <!-- ============ FOOTER ============ -->
+    <div class="foot">
+      <span class="ver">Premiere Toolkit <b>1.0.0</b></span>
+      <div class="ibtn" id="btnProbe" title="Diagnostics: dump native menus and open dialogs">
+        <svg viewBox="0 0 16 16">
+          <path d="M8 10.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4z"/>
+          <path d="M8 1.8v1.6M8 12.6v1.6M14.2 8h-1.6M3.4 8H1.8M12.4 3.6l-1.1 1.1M4.7 11.3l-1.1 1.1M12.4 12.4l-1.1-1.1M4.7 4.7L3.6 3.6"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

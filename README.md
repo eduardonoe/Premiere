@@ -2,6 +2,10 @@
 
 Repositorio de scripts, paineis e extensoes para Adobe Premiere Pro.
 
+## Projetos atuais
+
+- **Premiere Toolkit (v1.0.0)**: Painel UXP para Adobe Premiere Pro. Limpeza e organização de projeto, consolidação de duplicados e remoção de tracks vazias.
+
 ## Objetivo
 
 Concentrar desenvolvimentos relacionados ao Premiere Pro, como scripts, paineis CEP/UXP quando aplicavel, automacoes de timeline, organizacao de projeto, interpretacao de footage e fluxos de exportacao.
