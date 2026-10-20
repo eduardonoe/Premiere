@@ -1,0 +1,34 @@
+PREMIERE MCP 1.0.0 (Windows e macOS)
+====================================
+
+Permite que o Claude Code e o Codex controlem o Adobe Premiere Pro.
+
+REQUISITOS
+- Adobe Premiere Pro
+- Node.js (https://nodejs.org) e internet na primeira instalacao
+- Claude Code e/ou Codex instalados
+
+PC (WINDOWS)
+------------
+1. Extraia o ZIP inteiro e feche o Premiere.
+2. Abra a pasta PC.
+3. Rode 1_Install_Premiere_Extension.bat
+4. Rode 2_Install_AI_Agents.bat
+
+MAC (macOS)
+-----------
+1. Extraia o ZIP inteiro e feche o Premiere.
+2. Abra a pasta MAC.
+3. Clique com o botao direito em 1_Install_Premiere_Extension.command > Abrir.
+4. Faca o mesmo com 2_Install_AI_Agents.command.
+
+Se o macOS bloquear, rode no Terminal (troque pelo caminho da pasta extraida)
+e tente de novo:
+   xattr -dr com.apple.quarantine "/caminho/Premiere_MCP_1.0.0"
+
+DEPOIS DE INSTALAR
+------------------
+- Abra o Premiere: Window > Extensions > PR MCP Bridge
+  (o painel precisa estar aberto enquanto o agente trabalha).
+- Reinicie o Claude Code / Codex e peca: "premiere_status".
+- Reinstalar e seguro. Para remover tudo: Uninstall_Premiere_MCP (.bat / .command).

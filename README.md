@@ -1,22 +1,30 @@
 # Premiere
 
-Repositorio de scripts, painéis e extensões para Adobe Premiere Pro.
+Repositorio de scripts, painéis e ferramentas de automação para Adobe Premiere Pro.
 
 ## Projetos atuais
 
 - **Premiere Toolkit (v1.0.0)**: Painel UXP oficial para Adobe Premiere Pro. Limpeza e organização de projeto, consolidação de duplicados e remoção de tracks vazias na timeline.
+- **Premiere MCP Bridge (v1.0.0)**: Servidor Model Context Protocol (MCP) e extensão CEP para controle e automação remota da timeline e projeto do Premiere Pro via agentes de IA.
 
 ## Estrutura do Repositório
 
 ```text
-Premiere Toolkit/
-  README.md
-  plugin/
-  install/
-  test/
-  tools/
-  Premiere Toolkit 1.0.0 (Windows).zip
-  Premiere Toolkit 1.0.0 (Mac).zip
+Premiere/
+  ├── Premiere Toolkit/        # Painel UXP oficial
+  │     ├── plugin/
+  │     ├── install/
+  │     ├── test/
+  │     ├── tools/
+  │     ├── Premiere Toolkit 1.0.0 (Windows).zip
+  │     └── Premiere Toolkit 1.0.0 (Mac).zip
+  ├── mcp/                     # Ponte MCP & Automação da Timeline
+  │     ├── server/            # Servidor Node.js do premiere-bridge
+  │     ├── cep-panel/         # Painel CEP de ponte com o Premiere
+  │     ├── skill/             # Skill premiere-bridge para agentes de IA
+  │     ├── PC/ & MAC/         # Scripts de instalação
+  │     └── Premiere_MCP_1.0.0.zip
+  └── README.md
 ```
 
 ## Releases
